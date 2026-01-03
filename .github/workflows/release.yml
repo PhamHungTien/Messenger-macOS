@@ -18,11 +18,15 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest
+          xcode-version: '26.2'
       
       - name: Build app archive
         run: |
           mkdir -p build
+          xcodebuild clean \
+            -project Messenger.xcodeproj \
+            -scheme Messenger \
+            -configuration Release
           xcodebuild \
             -project Messenger.xcodeproj \
             -scheme Messenger \
