@@ -101,6 +101,25 @@ Built to replace the discontinued Facebook Messenger Desktop app, this project d
 3. **Try Quick Reply**: When a new message arrives, reply directly from the notification
 4. **Global Hotkey**: Press `Cmd+Shift+M` to show/hide the app from anywhere
 
+## Installation
+
+### From DMG (Recommended)
+
+1. Download the latest `Messenger-X.X.X.dmg` from [Releases](../../releases)
+2. Open the DMG file
+3. Drag `Messenger.app` into the `Applications` folder
+4. Launch from Applications or Spotlight (Cmd+Space)
+
+For detailed installation instructions, see [INSTALL.md](INSTALL.md).
+
+### From Source
+
+```bash
+git clone https://github.com/PhamHungTien/Messenger-macOS.git
+cd Messenger
+open Messenger.xcodeproj
+```
+
 ## Usage
 
 ### Menu Bar Mode
@@ -212,7 +231,9 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0) - see the [LICENSE](LICENSE) file for details.
+
+For more information about GPL-3.0, visit: https://www.gnu.org/licenses/gpl-3.0.html
 
 ## Acknowledgments
 
