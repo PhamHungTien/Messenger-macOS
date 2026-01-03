@@ -1,0 +1,7 @@
+// Debug configuration - No code signing for development
+
+CODE_SIGN_IDENTITY =
+CODE_SIGN_ENTITLEMENTS =
+DEVELOPMENT_TEAM =
+ENABLE_APP_SANDBOX = NO
+ENABLE_HARDENED_RUNTIME = NO
