@@ -1,96 +1,214 @@
-# Fix Code Signing Error
+# Code Signing Troubleshooting Guide
 
-## ✅ ĐÃ FIX - Giải pháp từ cộng đồng
+This guide helps resolve code signing issues when building Messenger for macOS in Xcode.
 
-File `Messenger.icon` **bắt buộc phải có code signing**. Đã áp dụng các fix phổ biến:
+## Table of Contents
 
-**Đã thực hiện:**
-1. ✅ Xóa extended attributes: `xattr -cr /Users/phamhungtien/Documents/Messenger/`
-2. ✅ Xóa DerivedData cũ
-3. ✅ Fix conflict settings: Xóa `CODE_SIGN_IDENTITY = "-"`
-4. ✅ Set `CODE_SIGN_STYLE = Automatic` (để Xcode tự chọn certificate)
-5. ✅ Set `REGISTER_APP_GROUPS = NO` cho Debug
-6. ✅ Giữ file `Messenger.icon` trong project
-
-**Bước tiếp theo trong Xcode:**
-
-1. **Restart Mac** (giải pháp #1 phổ biến nhất từ Apple Forums)
-
-2. **Clean Build Folder** (Cmd+Shift+K)
-
-3. **Build** (Cmd+B)
-
-**Nếu vẫn lỗi:** Xcode sẽ tự động prompt bạn chọn certificate hoặc tạo certificate mới. Chọn **"Sign to Run Locally"** khi được hỏi.
+- [Quick Fix (Recommended)](#quick-fix-recommended)
+- [Method 1: Configure Signing in Xcode](#method-1-configure-signing-in-xcode)
+- [Method 2: Reset Certificates](#method-2-reset-certificates)
+- [Method 3: Clear Derived Data](#method-3-clear-derived-data)
+- [Method 4: Modify Build Settings](#method-4-modify-build-settings)
+- [After Successful Build](#after-successful-build)
 
 ---
 
-## Nếu vẫn lỗi - Cách 1: Disable Code Signing trong Xcode (Recommended)
+## Quick Fix (Recommended)
 
-1. **Mở Xcode** → Click vào **Messenger project** (top của file navigator)
+The following steps resolve most code signing issues:
 
-2. **Select Messenger target** (dưới TARGETS)
+### Steps Already Applied
 
-3. **Tab "Signing & Capabilities"**
+1. ✅ Removed extended attributes: `xattr -cr /path/to/Messenger/`
+2. ✅ Cleared old DerivedData
+3. ✅ Removed conflicting `CODE_SIGN_IDENTITY = "-"` setting
+4. ✅ Set `CODE_SIGN_STYLE = Automatic` (allows Xcode to auto-select certificate)
+5. ✅ Set `REGISTER_APP_GROUPS = NO` for Debug configuration
+6. ✅ Kept `Messenger.icon` file in project (required for code signing)
 
-4. **Bỏ check "Automatically manage signing"**
+### Next Steps in Xcode
 
-5. **Set:**
-   - Signing Certificate: **Sign to Run Locally**
-   - Provisioning Profile: **None**
+1. **Restart your Mac** (most common solution from Apple Developer Forums)
+
+2. **Clean Build Folder** (`Cmd+Shift+K`)
+
+3. **Build** (`Cmd+B`)
+
+**If errors persist**: Xcode will prompt you to select or create a certificate. Choose **"Sign to Run Locally"** when prompted.
+
+---
+
+## Method 1: Configure Signing in Xcode
+
+Follow these steps to manually configure code signing:
+
+1. **Open Xcode** → Click on **Messenger project** (at the top of the file navigator)
+
+2. **Select Messenger target** (under TARGETS section)
+
+3. **Navigate to "Signing & Capabilities" tab**
+
+4. **Uncheck "Automatically manage signing"**
+
+5. **Configure the following:**
+   - **Signing Certificate**: Sign to Run Locally
+   - **Provisioning Profile**: None
 
 6. **Clean Build Folder:**
-   - Product menu → Clean Build Folder (hoặc Cmd+Shift+K)
+   - Menu: Product → Clean Build Folder
+   - Or press `Cmd+Shift+K`
 
 7. **Build:**
-   - Product menu → Build (hoặc Cmd+B)
+   - Menu: Product → Build
+   - Or press `Cmd+B`
 
 ---
 
-## Cách 2: Nếu Cách 1 không work
+## Method 2: Reset Certificates
 
-1. **Xcode → Preferences (Cmd+,)**
+If Method 1 doesn't resolve the issue, try resetting your certificates:
 
-2. **Tab "Accounts"**
+1. **Open Xcode Preferences** (`Cmd+,`)
 
-3. Nếu có Apple ID → Click **Manage Certificates** → Xóa các certificates cũ
+2. **Navigate to "Accounts" tab**
 
-4. Quay lại project → **Signing & Capabilities**:
-   - Team: **None**
-   - Signing Certificate: **-**
+3. If you have an Apple ID configured:
+   - Click **Manage Certificates**
+   - Remove any old or expired certificates
+
+4. **Return to project** → **Signing & Capabilities**:
+   - **Team**: None
+   - **Signing Certificate**: - (dash/empty)
+
+5. **Clean and rebuild** the project
 
 ---
 
-## Cách 3: Xóa Derived Data
+## Method 3: Clear Derived Data
+
+Clearing Xcode's Derived Data often resolves persistent build issues:
 
 1. **Xcode → File → Project Settings**
 
-2. Click **Derived Data** path
+2. Click the **Derived Data** path (shown in blue)
 
-3. Finder sẽ mở → **Xóa thư mục Messenger**
+3. **Finder will open** → Delete the **Messenger** folder
 
-4. Quay lại Xcode → **Clean Build Folder** → **Build**
+4. **Return to Xcode**:
+   - **Clean Build Folder** (`Cmd+Shift+K`)
+   - **Build** (`Cmd+B`)
+
+**Alternative method via Terminal:**
+```bash
+rm -rf ~/Library/Developer/Xcode/DerivedData/Messenger-*
+```
 
 ---
 
-## Cách 4: Check Build Settings
+## Method 4: Modify Build Settings
 
-1. Project → Messenger target → **Build Settings** tab
+Manually configure build settings to disable code signing for local development:
 
-2. Tìm "Code Signing Identity" (filter: "signing")
+1. **Select Project** → **Messenger target** → **Build Settings tab**
 
-3. **Debug** row → Set value: **Don't Code Sign** (hoặc để trống)
+2. **Search for "Code Signing Identity"** (use filter box: "signing")
 
-4. Tìm "Development Team" → Set: **None**
+3. **For the Debug row** → Set value to: **Don't Code Sign** (or leave empty)
 
-5. Clean và Build lại
+4. **Search for "Development Team"** → Set to: **None**
+
+5. **Search for "Code Sign Style"** → Set to: **Automatic**
+
+6. **Clean Build Folder** (`Cmd+Shift+K`) and **Build** (`Cmd+B`)
+
+### Additional Build Settings to Verify
+
+Ensure these settings are configured correctly:
+
+| Setting | Value |
+|---------|-------|
+| `ENABLE_USER_SCRIPT_SANDBOXING` | NO |
+| `CODE_SIGN_ENTITLEMENTS` | Messenger/Messenger.entitlements |
+| `CODE_SIGN_STYLE` | Automatic |
+| `REGISTER_APP_GROUPS` | NO (for Debug) |
 
 ---
 
-## Sau khi fix thành công:
+## After Successful Build
 
-Build sẽ tạo file `.app` tại:
+Once the build succeeds, you'll find the application at:
+
 ```
-~/Library/Developer/Xcode/DerivedData/Messenger-.../Build/Products/Debug/Messenger.app
+~/Library/Developer/Xcode/DerivedData/Messenger-[hash]/Build/Products/Debug/Messenger.app
 ```
 
-Bạn có thể run trực tiếp từ Xcode với **Product → Run** (Cmd+R)
+### Running the Application
+
+**From Xcode:**
+- Menu: Product → Run
+- Or press `Cmd+R`
+
+**From Finder:**
+- Navigate to the build path above
+- Double-click `Messenger.app` to launch
+
+---
+
+## Common Error Messages
+
+### "errSecInternalComponent"
+
+**Solution**: Restart Xcode and your Mac, then rebuild.
+
+### "No signing certificate... found"
+
+**Solution**:
+1. Go to Signing & Capabilities
+2. Select "Sign to Run Locally"
+3. Or create a development certificate in Xcode Preferences → Accounts
+
+### "Provisioning profile... doesn't include signing certificate"
+
+**Solution**: Set Provisioning Profile to "None" in Signing & Capabilities
+
+### "Command CodeSign failed with a nonzero exit code"
+
+**Solution**:
+1. Clear Derived Data (Method 3)
+2. Remove extended attributes: `xattr -cr /path/to/Messenger`
+3. Rebuild
+
+---
+
+## Still Having Issues?
+
+If none of these methods work:
+
+1. **Create a new Xcode project** with the same bundle identifier and compare build settings
+2. **Check macOS Keychain** for duplicate or invalid certificates (Keychain Access app)
+3. **Verify your macOS version** meets the minimum requirements (macOS 14.0+)
+4. **Check Xcode version** (requires Xcode 15.0+)
+
+For additional help, file an issue on the [GitHub repository](https://github.com/PhamHungTien/Messenger-macOS/issues).
+
+---
+
+## Developer Notes
+
+### Why Code Signing is Required
+
+Even for local development, macOS requires basic code signing for:
+- Entitlements (notifications, network access)
+- Sandboxing permissions
+- Debugging with Xcode
+
+### Best Practices
+
+- Use **"Sign to Run Locally"** for development
+- Use **proper certificates** for distribution
+- Keep **entitlements minimal** to avoid signing issues
+- **Version control** your `.xcodeproj` and `.entitlements` files
+
+---
+
+**Last Updated**: 2026-01-03
